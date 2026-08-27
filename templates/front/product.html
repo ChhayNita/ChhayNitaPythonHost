@@ -1,0 +1,39 @@
+{% extends "front/base.html" %}
+
+{% block content %}
+  <section class="container product-detail">
+    <div class="product-image">
+      <img src="{{ product.image }}" alt="{{ product.title }}">
+    </div>
+    <div>
+      <div class="eyebrow">{{ product.category }}</div>
+      <h1>{{ product.title }}</h1>
+      <div class="rating">{{ product.rating.rate }} / 5</div>
+      <p>{{ product.description }}</p>
+      <div class="price-row large">
+        {% if product.has_discount %}
+          <span class="old-price">${{ "%.2f"|format(product.original_price) }}</span>
+        {% endif %}
+        <span class="price">${{ "%.2f"|format(product.discounted_price) }}</span>
+      </div>
+      <div class="actions">
+        <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+          <button type="submit">Add to cart</button>
+        </form>
+        <a class="button secondary" href="{{ url_for('checkout') }}">Buy now</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Related products</div>
+        <h2>Similar category</h2>
+      </div>
+      <a href="{{ url_for('products') }}">All products</a>
+    </div>
+    {% set products = related %}
+    {% include "front/share/product-grid.html" %}
+  </section>
+{% endblock %}

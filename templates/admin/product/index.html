@@ -1,0 +1,145 @@
+{% extends 'admin/master.html' %}
+
+{% block content %}
+<!-- Top Control Header & Search Filters -->
+<div class="p-5 rounded-2xl glass-panel border border-slate-800 shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between">
+  <div class="flex items-center gap-3 w-full md:w-auto">
+    <!-- Search Bar -->
+    <div class="relative flex-1 md:w-80">
+      <input type="text" id="product-search" oninput="filterProducts()" placeholder="Filter products by title..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 pl-9">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+
+    <!-- Category Select -->
+    <select id="product-category-filter" onchange="filterProducts()" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none">
+      <option value="">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="jewelery">Jewelery</option>
+      <option value="men's clothing">Men's Clothing</option>
+      <option value="women's clothing">Women's Clothing</option>
+    </select>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+    <button onclick="openModal('modal-add-product')" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-xs shadow-lg shadow-blue-500/20 hover:from-blue-500 hover:to-indigo-500 transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      <span>Add Product</span>
+    </button>
+  </div>
+</div>
+
+<!-- Product Table Card -->
+<div class="p-6 rounded-2xl glass-panel border border-slate-800 shadow-xl">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse text-xs" id="product-table">
+      <thead>
+        <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+          <th class="py-3 px-4">Item</th>
+          <th class="py-3 px-4">Category</th>
+          <th class="py-3 px-4">Price</th>
+          <th class="py-3 px-4">Stock</th>
+          <th class="py-3 px-4">Rating</th>
+          <th class="py-3 px-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800/60 text-slate-300" id="product-table-body">
+        <!-- Row 1 -->
+        <tr class="hover:bg-slate-800/40 transition product-row" data-title="fjallraven foldsack backpack" data-category="men's clothing">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <img src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" alt="Backpack" class="w-10 h-10 object-contain rounded-lg bg-white p-1 shadow-sm shrink-0">
+            <div class="max-w-xs">
+              <p class="font-medium text-white truncate text-xs product-title">Fjallraven - Foldsack No. 1 Backpack</p>
+              <p class="text-[11px] text-slate-500 font-mono">ID: #101</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 capitalize product-category">men's clothing</span></td>
+          <td class="py-3.5 px-4"><span class="font-semibold text-white product-price">$109.95</span> <span class="text-[11px] text-slate-500 line-through ml-1">$126.44</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">In Stock</span></td>
+          <td class="py-3.5 px-4 text-amber-400 font-medium">★ 3.9 <span class="text-slate-500 font-normal">(120)</span></td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- Row 2 -->
+        <tr class="hover:bg-slate-800/40 transition product-row" data-title="mens casual premium slim fit t-shirts" data-category="men's clothing">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <img src="https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg" alt="T-Shirt" class="w-10 h-10 object-contain rounded-lg bg-white p-1 shadow-sm shrink-0">
+            <div class="max-w-xs">
+              <p class="font-medium text-white truncate text-xs product-title">Mens Casual Premium Slim Fit T-Shirts</p>
+              <p class="text-[11px] text-slate-500 font-mono">ID: #102</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 capitalize product-category">men's clothing</span></td>
+          <td class="py-3.5 px-4"><span class="font-semibold text-white product-price">$22.30</span> <span class="text-[11px] text-slate-500 line-through ml-1">$25.65</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">In Stock</span></td>
+          <td class="py-3.5 px-4 text-amber-400 font-medium">★ 4.1 <span class="text-slate-500 font-normal">(259)</span></td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- Row 3 -->
+        <tr class="hover:bg-slate-800/40 transition product-row" data-title="john hardy dragon station chain bracelet" data-category="jewelery">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <img src="https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg" alt="Bracelet" class="w-10 h-10 object-contain rounded-lg bg-white p-1 shadow-sm shrink-0">
+            <div class="max-w-xs">
+              <p class="font-medium text-white truncate text-xs product-title">John Hardy Dragon Chain Bracelet</p>
+              <p class="text-[11px] text-slate-500 font-mono">ID: #103</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 capitalize product-category">jewelery</span></td>
+          <td class="py-3.5 px-4"><span class="font-semibold text-white product-price">$695.00</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Low Stock</span></td>
+          <td class="py-3.5 px-4 text-amber-400 font-medium">★ 4.6 <span class="text-slate-500 font-normal">(400)</span></td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- Row 4 -->
+        <tr class="hover:bg-slate-800/40 transition product-row" data-title="wd 2tb elements external hard drive" data-category="electronics">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <img src="https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg" alt="Hard Drive" class="w-10 h-10 object-contain rounded-lg bg-white p-1 shadow-sm shrink-0">
+            <div class="max-w-xs">
+              <p class="font-medium text-white truncate text-xs product-title">WD 2TB Elements Portable Hard Drive</p>
+              <p class="text-[11px] text-slate-500 font-mono">ID: #104</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 capitalize product-category">electronics</span></td>
+          <td class="py-3.5 px-4"><span class="font-semibold text-white product-price">$64.00</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">In Stock</span></td>
+          <td class="py-3.5 px-4 text-amber-400 font-medium">★ 4.7 <span class="text-slate-500 font-normal">(670)</span></td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- Row 5 -->
+        <tr class="hover:bg-slate-800/40 transition product-row" data-title="samsung 49-inch gaming monitor" data-category="electronics">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <img src="https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg" alt="Monitor" class="w-10 h-10 object-contain rounded-lg bg-white p-1 shadow-sm shrink-0">
+            <div class="max-w-xs">
+              <p class="font-medium text-white truncate text-xs product-title">Samsung 49-Inch Curved Gaming Monitor</p>
+              <p class="text-[11px] text-slate-500 font-mono">ID: #106</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 capitalize product-category">electronics</span></td>
+          <td class="py-3.5 px-4"><span class="font-semibold text-white product-price">$999.99</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">In Stock</span></td>
+          <td class="py-3.5 px-4 text-amber-400 font-medium">★ 4.9 <span class="text-slate-500 font-normal">(320)</span></td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteProductRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

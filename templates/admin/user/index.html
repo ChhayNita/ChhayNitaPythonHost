@@ -1,0 +1,126 @@
+{% extends 'admin/master.html' %}
+
+{% block content %}
+<!-- User Metrics Summary Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+  <div class="p-4 rounded-2xl glass-panel border border-slate-800 flex items-center gap-4">
+    <div class="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Total System Users</p>
+      <h4 class="text-xl font-bold text-white" id="user-total-badge">6 Registered</h4>
+    </div>
+  </div>
+  <div class="p-4 rounded-2xl glass-panel border border-slate-800 flex items-center gap-4">
+    <div class="p-3 rounded-xl bg-violet-500/10 text-violet-400">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Admin Personnel</p>
+      <h4 class="text-xl font-bold text-white">2 Administrators</h4>
+    </div>
+  </div>
+  <div class="p-4 rounded-2xl glass-panel border border-slate-800 flex items-center gap-4">
+    <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Active Account Rate</p>
+      <h4 class="text-xl font-bold text-white">100% Active</h4>
+    </div>
+  </div>
+</div>
+
+<!-- Controls Header -->
+<div class="p-5 rounded-2xl glass-panel border border-slate-800 shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between">
+  <div class="flex items-center gap-3 w-full md:w-auto">
+    <div class="relative flex-1 md:w-80">
+      <input type="text" id="user-search" oninput="filterUsers()" placeholder="Search users by name or email..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 pl-9">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+    <select id="user-role-filter" onchange="filterUsers()" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none">
+      <option value="">All Roles</option>
+      <option value="admin">Admin</option>
+      <option value="customer">Customer</option>
+    </select>
+  </div>
+
+  <button onclick="openModal('modal-add-user')" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold text-xs shadow-lg shadow-emerald-500/20 hover:from-emerald-500 hover:to-teal-500 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+    <span>Add New User</span>
+  </button>
+</div>
+
+<!-- User Data Table -->
+<div class="p-6 rounded-2xl glass-panel border border-slate-800 shadow-xl">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse text-xs" id="user-table">
+      <thead>
+        <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+          <th class="py-3 px-4">User</th>
+          <th class="py-3 px-4">Role</th>
+          <th class="py-3 px-4">Status</th>
+          <th class="py-3 px-4">Joined Date</th>
+          <th class="py-3 px-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800/60 text-slate-300" id="user-table-body">
+        <!-- User 1 -->
+        <tr class="hover:bg-slate-800/40 transition user-row" data-name="chanrith roung" data-email="admin@techey.tech" data-role="admin">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white text-xs shrink-0 shadow user-avatar">CR</div>
+            <div>
+              <p class="font-semibold text-white user-name">CHAY NITA</p>
+              <p class="text-[11px] text-slate-400 user-email">admin@techey.tech</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-violet-500/10 text-violet-400 border border-violet-500/20 user-role">Admin</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 user-status">Active</span></td>
+          <td class="py-3.5 px-4 text-slate-400">Jan 15, 2026</td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- User 2 -->
+        <tr class="hover:bg-slate-800/40 transition user-row" data-name="alex morgan" data-email="alex.m@example.com" data-role="customer">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-teal-500 flex items-center justify-center font-bold text-white text-xs shrink-0 shadow user-avatar">AM</div>
+            <div>
+              <p class="font-semibold text-white user-name">Alex Morgan</p>
+              <p class="text-[11px] text-slate-400 user-email">alex.m@example.com</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 user-role">Customer</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 user-status">Active</span></td>
+          <td class="py-3.5 px-4 text-slate-400">Feb 02, 2026</td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+
+        <!-- User 3 -->
+        <tr class="hover:bg-slate-800/40 transition user-row" data-name="sophia chen" data-email="sophia.chen@dev.io" data-role="customer">
+          <td class="py-3.5 px-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 to-rose-500 flex items-center justify-center font-bold text-white text-xs shrink-0 shadow user-avatar">SC</div>
+            <div>
+              <p class="font-semibold text-white user-name">Sophia Chen</p>
+              <p class="text-[11px] text-slate-400 user-email">sophia.chen@dev.io</p>
+            </div>
+          </td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 user-role">Customer</span></td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 user-status">Active</span></td>
+          <td class="py-3.5 px-4 text-slate-400">Mar 10, 2026</td>
+          <td class="py-3.5 px-4 text-right space-x-2">
+            <button onclick="editUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+            <button onclick="deleteUserRow(this)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
